@@ -554,9 +554,30 @@
         return out;
       }
 
-      function loadFile(file) {
+      // Magic-number sniff for files where MIME and filename give us nothing
+      // (e.g. a PNG saved without an extension, or dragged from a source that
+      // didn't set Content-Type). Returns the format name or null.
+      async function sniffImageFormat(file) {
+        try {
+          const head = new Uint8Array(await file.slice(0, 8).arrayBuffer());
+          // PNG: 89 50 4E 47 0D 0A 1A 0A
+          if (head[0] === 0x89 && head[1] === 0x50 && head[2] === 0x4e && head[3] === 0x47) return 'png';
+          // JPEG: FF D8 FF
+          if (head[0] === 0xff && head[1] === 0xd8 && head[2] === 0xff) return 'jpeg';
+          // GIF: 47 49 46 38 (37|39) 61  →  GIF87a / GIF89a
+          if (head[0] === 0x47 && head[1] === 0x49 && head[2] === 0x46 && head[3] === 0x38) return 'gif';
+        } catch { /* ignore */ }
+        return null;
+      }
+
+      async function loadFile(file) {
         if (!file) return;
-        const looksImage = /^image\//.test(file.type) || /\.(png|jpe?g|gif)$/i.test(file.name);
+        let looksImage = /^image\//.test(file.type) || /\.(png|jpe?g|gif)$/i.test(file.name);
+        if (!looksImage) {
+          // Last-resort magic-number check so a real PNG/JPEG/GIF without a
+          // sensible name or MIME still works.
+          looksImage = (await sniffImageFormat(file)) !== null;
+        }
         if (!looksImage) {
           showError(`Unsupported file: "${file.name}" (${file.type || 'unknown type'}). Need PNG, JPEG, or GIF.`);
           return;
