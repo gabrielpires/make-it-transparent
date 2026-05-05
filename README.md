@@ -52,6 +52,46 @@ go build -trimpath -ldflags="-s -w" -o make-it-transparent .
 ./make-it-transparent -port=:8080
 ```
 
+## Run with Docker
+
+A multi-stage `Dockerfile` produces a **17 MB** image based on
+`gcr.io/distroless/static-debian12:nonroot` — no shell, no package manager,
+runs as `nonroot:nonroot`.
+
+```bash
+# Build locally
+docker build -t make-it-transparent:local .
+docker run --rm -p 8080:8080 make-it-transparent:local
+```
+
+Once published to GHCR (see issue tracker — *coming soon*), the prebuilt image
+is the recommended path:
+
+```bash
+docker run --rm -p 8080:8080 ghcr.io/gabrielpires/make-it-transparent:latest
+```
+
+### Compose
+
+A hardened `compose.yaml` ships in the repo (read-only root FS, `cap_drop:
+ALL`, `no-new-privileges`, tmpfs for the multipart spool, RAM/CPU ceilings).
+Bind to `127.0.0.1` and front it with Caddy/nginx/Cloudflare Tunnel for TLS:
+
+```bash
+docker compose up -d
+```
+
+### Multi-arch
+
+To produce a manifest covering `linux/amd64` and `linux/arm64`:
+
+```bash
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t ghcr.io/gabrielpires/make-it-transparent:latest \
+  --push .
+```
+
 ### Flags
 
 | Flag    | Default  | Description                |
