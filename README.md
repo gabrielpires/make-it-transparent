@@ -35,62 +35,54 @@ download and run it locally.
 - **Light and dark mode** with system-preference detection.
 - **One static binary**, frontend embedded via `go:embed`. Self-host in seconds.
 
-## Run locally
+## Install
 
-Requirements: Go ≥ 1.25.
+Pick whichever fits. All three target the same app on `http://localhost:8080`.
+Run `make` (no arguments) at any time to list every available target.
+
+### Option 1 — Run locally from source
+
+Requires **Go ≥ 1.25**.
 
 ```bash
 git clone https://github.com/gabrielpires/make-it-transparent.git
 cd make-it-transparent
-go run .                   # http://localhost:8080
+make run
 ```
 
-Or build a release binary:
+### Option 2 — Run Docker, building from source
+
+Requires **Docker**. Builds the image (17 MB, distroless, runs as `nonroot`)
+and starts a container in one go.
 
 ```bash
-go build -trimpath -ldflags="-s -w" -o make-it-transparent .
-./make-it-transparent -port=:8080
+git clone https://github.com/gabrielpires/make-it-transparent.git
+cd make-it-transparent
+make docker-run            # builds + runs, → http://localhost:8080
+make docker-logs           # tail logs
+make docker-stop           # stop the container
 ```
 
-## Run with Docker
+### Option 3 — Run the published image from GHCR
 
-A multi-stage `Dockerfile` produces a **17 MB** image based on
-`gcr.io/distroless/static-debian12:nonroot` — no shell, no package manager,
-runs as `nonroot:nonroot`.
-
-```bash
-# Build locally
-docker build -t make-it-transparent:local .
-docker run --rm -p 8080:8080 make-it-transparent:local
-```
-
-Once published to GHCR (see issue tracker — *coming soon*), the prebuilt image
-is the recommended path:
+No clone, no build. Pulls the prebuilt multi-arch image (`linux/amd64` +
+`linux/arm64`) from GitHub Container Registry:
 
 ```bash
 docker run --rm -p 8080:8080 ghcr.io/gabrielpires/make-it-transparent:latest
 ```
 
-### Compose
-
-A hardened `compose.yaml` ships in the repo (read-only root FS, `cap_drop:
-ALL`, `no-new-privileges`, tmpfs for the multipart spool, RAM/CPU ceilings).
-Bind to `127.0.0.1` and front it with Caddy/nginx/Cloudflare Tunnel for TLS:
+For a long-running, hardened deployment (read-only root FS, `cap_drop: ALL`,
+`no-new-privileges`, tmpfs spool, RAM/CPU ceilings), grab the bundled
+`compose.yaml` and:
 
 ```bash
+curl -O https://raw.githubusercontent.com/gabrielpires/make-it-transparent/main/compose.yaml
 docker compose up -d
 ```
 
-### Multi-arch
-
-To produce a manifest covering `linux/amd64` and `linux/arm64`:
-
-```bash
-docker buildx build \
-  --platform linux/amd64,linux/arm64 \
-  -t ghcr.io/gabrielpires/make-it-transparent:latest \
-  --push .
-```
+Bind to `127.0.0.1` (the default in `compose.yaml`) and front it with
+Caddy/nginx/Cloudflare Tunnel for TLS.
 
 ### Flags
 
@@ -155,19 +147,28 @@ you'd rather skip the proxy.
 
 ## Development
 
+Most things are wrapped in the [Makefile](Makefile). Run `make` to list every
+target.
+
 ```bash
-go test -race ./...                 # unit + integration tests
-go test -bench=. ./...              # benchmark
-go test -fuzz=FuzzParseHex ./internal/transparent
-go vet ./...
-golangci-lint run                   # if installed
-govulncheck ./...                   # if installed
+make ci          # vet + race tests (what GitHub Actions runs)
+make test        # race tests + coverage summary
+make bench       # benchmarks only
+make fuzz        # 30-second fuzz on ParseHex
+make lint        # golangci-lint (if installed)
+make fmt         # gofmt -w
+make tidy        # go mod tidy
+make gen-og      # regenerate web/og.png
+make clean       # remove built binary + coverage
 ```
 
-Regenerate the OpenGraph image:
+For Docker / Compose / multi-arch:
 
 ```bash
-go run ./cmd/gen-og
+make docker-build               # build local image
+make docker-run PORT=9000       # build + run on a custom port
+make docker-buildx              # multi-arch (amd64 + arm64) — requires buildx
+make compose-up                 # docker compose up -d --build
 ```
 
 ## Layout
