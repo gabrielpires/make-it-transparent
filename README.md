@@ -18,6 +18,12 @@ download and run it locally.
 
 ---
 
+## Demo
+
+![25-second walkthrough of Make It Transparent](docs/demo.gif)
+
+---
+
 ## Highlights
 
 - **Pixel-pure**: no lossy compression on the colour data. Output is PNG
