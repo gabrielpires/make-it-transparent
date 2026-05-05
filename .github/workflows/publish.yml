@@ -2,7 +2,6 @@ name: Publish image
 
 on:
   push:
-    branches: [main]
     tags: ['v*.*.*']
   workflow_dispatch:
 
@@ -43,16 +42,16 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }}
+          # latest=auto (the default flavor) automatically applies :latest to
+          # the highest semver tag in this run — so on every `v*.*.*` push
+          # we get :v1.2.3, :1.2.3, :1.2, AND :latest pointing at it.
           tags: |
-            # branch name → :main on default-branch pushes
-            type=ref,event=branch
-            # short commit sha → :sha-abc1234
-            type=sha,format=short
-            # tag pushes → :v1.2.3, :1.2.3, :1.2 (and :latest also via raw rule)
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            # :latest follows the default branch
-            type=raw,value=latest,enable={{is_default_branch}}
+            # :sha-abc1234 — handy for pinning a specific build
+            type=sha,format=short
+            # :main only on a workflow_dispatch from the default branch
+            type=ref,event=branch,enable=${{ github.event_name == 'workflow_dispatch' }}
 
       - name: Build and push (linux/amd64 + linux/arm64)
         id: build
