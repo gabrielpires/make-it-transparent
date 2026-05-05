@@ -155,36 +155,36 @@
         <p class="mt-2 max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
           Upload an image, pick a color(s), and we'll wipe it to alpha. Lossless PNG out.
         </p>
-        <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-500">
-          Made with <span class="text-rose-500" aria-hidden="true">♥</span> by
-          <a href="https://gabrielpires.com.br" target="_blank" rel="noopener noreferrer"
-             class="inline-flex items-center gap-1 font-medium text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300">
-            Gabriel Pires
-            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/>
-              <line x1="10" y1="14" x2="21" y2="3"/>
+        <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
+          <span>
+            Made with <span class="text-rose-500" aria-hidden="true">♥</span> by
+            <a href="https://gabrielpires.com.br" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1 font-medium text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300">
+              Gabriel Pires
+              <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          </span>
+          <button id="theme-toggle" type="button" aria-label="Toggle theme"
+                  class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100">
+            <svg class="h-3.5 w-3.5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
-          </a>
-        </p>
+            <svg class="hidden h-3.5 w-3.5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <!-- Theme toggle -->
-        <button id="theme-toggle" type="button" aria-label="Toggle theme"
-                class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100">
-          <svg class="h-4 w-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-          <svg class="hidden h-4 w-4 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-          </svg>
-        </button>
-
+      <div class="flex items-center">
         <!-- GitHub widget for this repo, with a self-host nudge above -->
         <div class="flex flex-col items-end gap-1">
           <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
