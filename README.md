@@ -30,7 +30,7 @@ download and run it locally.
   encoded with `png.NoCompression`.
 - **Multiple colors**: pick up to 8 colours, each with its own tolerance.
 - **Eyedropper**: click anywhere on the original to sample a pixel.
-- **No accounts, no telemetry, no upload retention** — requests are processed
+- **No accounts, no telemetry, no upload retention**: requests are processed
   in memory and discarded.
 - **Light and dark mode** with system-preference detection.
 - **One static binary**, frontend embedded via `go:embed`. Self-host in seconds.
@@ -40,7 +40,7 @@ download and run it locally.
 Pick whichever fits. All three target the same app on `http://localhost:8080`.
 Run `make` (no arguments) at any time to list every available target.
 
-### Option 1 — Run locally from source
+### Option 1: Run locally from source
 
 Requires **Go ≥ 1.25**.
 
@@ -50,7 +50,7 @@ cd make-it-transparent
 make run
 ```
 
-### Option 2 — Run Docker, building from source
+### Option 2: Run Docker, building from source
 
 Requires **Docker**. Builds the image (17 MB, distroless, runs as `nonroot`)
 and starts a container in one go.
@@ -63,7 +63,7 @@ make docker-logs           # tail logs
 make docker-stop           # stop the container
 ```
 
-### Option 3 — Run the published image from GHCR
+### Option 3: Run the published image from GHCR
 
 No clone, no build. Pulls the prebuilt multi-arch image (`linux/amd64` +
 `linux/arm64`) from GitHub Container Registry:
@@ -113,7 +113,7 @@ Sources living in `internal/transparent`.
 
 ## API
 
-`POST /api/transparent` — multipart form:
+`POST /api/transparent`, multipart form:
 
 | Field       | Repeated? | Notes |
 |-------------|-----------|-------|
@@ -133,7 +133,7 @@ curl -X POST https://transparent.gabrielpires.com/api/transparent \
 
 ## Self-hosting
 
-The whole app — frontend included — is a single static binary. A minimal
+The whole app, frontend included, is a single static binary. A minimal
 `Caddyfile` for putting it behind TLS:
 
 ```Caddyfile
@@ -167,7 +167,7 @@ For Docker / Compose / multi-arch:
 ```bash
 make docker-build               # build local image
 make docker-run PORT=9000       # build + run on a custom port
-make docker-buildx              # multi-arch (amd64 + arm64) — requires buildx
+make docker-buildx              # multi-arch (amd64 + arm64), requires buildx
 make compose-up                 # docker compose up -d --build
 ```
 
@@ -190,12 +190,12 @@ make compose-up                 # docker compose up -d --build
 
 ## Security
 
-Vulnerabilities? Please don't open a public issue — see
+Vulnerabilities? Please don't open a public issue. See
 [SECURITY.md](SECURITY.md).
 
 ## License
 
-[PolyForm Noncommercial 1.0.0](LICENSE) — free for personal, hobby, research,
+[PolyForm Noncommercial 1.0.0](LICENSE). Free for personal, hobby, research,
 and noncommercial use. For commercial licensing, get in touch:
 <eu@gabrielpires.com.br>.
 
