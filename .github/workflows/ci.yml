@@ -66,7 +66,10 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.1
+          # The linter binary itself must be built with a Go ≥ go.mod's
+          # `go` directive, otherwise it refuses to load. v2.10 ships
+          # with Go 1.25; bump alongside any go.mod toolchain bump.
+          version: v2.10
           args: --timeout=5m
 
   security:
