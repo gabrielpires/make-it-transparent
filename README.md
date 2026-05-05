@@ -31,7 +31,7 @@ download and run it locally.
 
 ## Run locally
 
-Requirements: Go ≥ 1.23.
+Requirements: Go ≥ 1.25.
 
 ```bash
 git clone https://github.com/gabrielpires/make-it-transparent.git
