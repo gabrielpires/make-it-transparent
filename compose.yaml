@@ -28,13 +28,15 @@ services:
     security_opt:
       - no-new-privileges:true
 
-    # Resource ceiling. Each in-flight decode peaks ~150 MiB at 16 MP, capped
-    # at 8 concurrent jobs in code → ~1.2 GiB worst case.
+    # Resource ceiling. Each decode peaks ~150 MiB at the 16 MP MaxPixels cap;
+    # the in-app semaphore caps concurrency at 4 → ~600 MiB worst case. Most
+    # uploads (1–4 MP screenshots) stay well under 50 MiB. CPU is cheap —
+    # decoding 16 MP takes ~20 ms, encoding is similar.
     deploy:
       resources:
         limits:
-          memory: 1500m
-          cpus: "2.0"
+          memory: 512m
+          cpus: "1.0"
 
     # A built-in `/healthcheck` HTTP endpoint is exposed by httpkit. The
     # distroless base has no shell or curl/wget, so a Docker-managed

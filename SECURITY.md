@@ -66,8 +66,8 @@ We do **not** assume:
 | 4 | **Filename header injection / path traversal** via `Content-Disposition`. | `downloadName` strips `/`, `\`, control chars, quotes, backslashes, normalises empty/`.`/`..`, caps at 80 chars. Unit-tested. |
 | 5 | **XSS via uploaded image content**. | Re-encoded as PNG; response is `Content-Type: image/png` + `X-Content-Type-Options: nosniff`. Never echoed as HTML. Errors come back as JSON, not as the user-supplied bytes. |
 | 6 | **Filesystem read via path traversal** in URL (e.g. `/../main.go`). | `staticHandler` serves an explicit allowlist (`/`, `/favicon.svg`, `/og.png`, `/robots.txt`, `/sitemap.xml`). Anything else is `404`. The embedded FS itself contains nothing else. |
-| 7 | **Memory/CPU exhaustion** by holding many connections open. | `Concurrency(8, …)` middleware caps simultaneous decode jobs; excess gets `503` with `Retry-After`. Per-request timeouts are 30s read / 60s write. Per-request body cap is 25 MiB. |
-| 8 | **Multipart-spool disk fill**. | `MaxBytesReader` caps the body at 25 MiB *before* it can spool. With concurrency cap of 8, peak temp-disk usage is ≈ 200 MiB. |
+| 7 | **Memory/CPU exhaustion** by holding many connections open. | `Concurrency(4, …)` middleware caps simultaneous decode jobs; excess gets `503` with `Retry-After`. Per-request timeouts are 30s read / 60s write. Per-request body cap is 25 MiB. |
+| 8 | **Multipart-spool disk fill**. | `MaxBytesReader` caps the body at 25 MiB *before* it can spool. With concurrency cap of 4, peak temp-disk usage is ≈ 100 MiB. |
 | 9 | **CSRF**. | No auth, no cookies, no privileged action — there's nothing for CSRF to escalate. |
 | 10 | **Open redirect / SSRF**. | The server makes no outbound HTTP. The frontend's GitHub-stars fetch happens client-side from the browser's origin. |
 | 11 | **Trusted proxy header spoofing** (`X-Forwarded-For`, `X-Real-IP`, etc.). | We don't trust any inbound header for security decisions. `X-Request-ID` is reused if present, but only as a logging label. |
@@ -83,7 +83,7 @@ We do **not** assume:
 - `http.MaxBytesReader` (25 MiB).
 - `transparent.MaxPixels` decompression-bomb guard.
 - `allowedFormats` hard whitelist.
-- `Concurrency(8, …)` semaphore on the decode endpoint.
+- `Concurrency(4, …)` semaphore on the decode endpoint.
 - Strong response headers (CSP, XCTO, XFO, Referrer-Policy, Permissions-Policy).
 - Allowlisted static-file routing.
 - Filename sanitisation.

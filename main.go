@@ -46,8 +46,10 @@ func main() {
 	s.Middleware(securityHeaders)
 
 	// Cap concurrent in-flight decode jobs. Each decode peaks ~150 MB at the
-	// edge of MaxPixels, so 8 in flight ≈ 1.2 GB worst-case. Excess gets 503.
-	s.Handle("/api/transparent", handler.Concurrency(8, handler.Transparent(handler.DefaultLimits())))
+	// edge of MaxPixels, so 4 in flight ≈ 600 MB worst-case — comfortably
+	// inside a 512 MB container limit for typical loads (most uploads are
+	// well under 16 MP). Excess requests get 503 with Retry-After: 1.
+	s.Handle("/api/transparent", handler.Concurrency(4, handler.Transparent(handler.DefaultLimits())))
 	s.Handle("/", staticHandler(staticFS))
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
