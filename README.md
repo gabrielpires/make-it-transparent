@@ -13,8 +13,7 @@
 > result. Making an image transparent should be simple and fast. Here is my
 > contribution.
 
-You can use it on the website **<https://transparent.gabrielpires.com>** or
-download and run it locally.
+Download and run it locally without hassle.
 
 ---
 
