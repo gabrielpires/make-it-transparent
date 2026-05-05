@@ -1,0 +1,32 @@
+# VCS / hidden state
+.git
+.gitignore
+.github
+
+# Tooling configs not needed at build time
+.golangci.yml
+.vscode
+.idea
+.DS_Store
+
+# Docs / non-runtime assets
+*.md
+docs
+LICENSE
+SECURITY.md
+CONTRIBUTING.md
+
+# Build artefacts
+/make-it-transparent
+*.test
+*.out
+coverage.*
+
+# Test corpora (can balloon the build context)
+testdata/fuzz/
+
+# Compose / Docker config don't need to be inside the image
+Dockerfile
+.dockerignore
+compose.yaml
+docker-compose.yml

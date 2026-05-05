@@ -1,0 +1,42 @@
+# compose.yaml — minimal, hardened self-host config.
+# Once the image is published to GHCR (next PR), the `image:` line below
+# is what self-hosters will pull. For now you can build locally with
+#   docker compose build
+# and run with
+#   docker compose up -d
+
+services:
+  make-it-transparent:
+    image: ghcr.io/gabrielpires/make-it-transparent:latest
+    build:
+      context: .
+    container_name: make-it-transparent
+    restart: unless-stopped
+    ports:
+      # Bind to localhost so a reverse proxy (Caddy/nginx/Cloudflare Tunnel)
+      # is the only thing facing the internet. Drop the "127.0.0.1:" prefix
+      # if you want to expose directly.
+      - "127.0.0.1:8080:8080"
+
+    # Hardening: the binary writes nothing to disk other than the multipart
+    # spool, which we redirect to a 64 MiB tmpfs.
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+    # Resource ceiling. Each in-flight decode peaks ~150 MiB at 16 MP, capped
+    # at 8 concurrent jobs in code → ~1.2 GiB worst case.
+    deploy:
+      resources:
+        limits:
+          memory: 1500m
+          cpus: "2.0"
+
+    # A built-in `/healthcheck` HTTP endpoint is exposed by httpkit. The
+    # distroless base has no shell or curl/wget, so a Docker-managed
+    # healthcheck would need a custom probe binary. Probe externally
+    # instead — Caddy, k8s liveness, Uptime-Kuma, etc.
