@@ -70,6 +70,9 @@ func Transparent(limits Limits) http.Handler {
 		}
 
 		r.Body = http.MaxBytesReader(w, r.Body, limits.MaxUploadBytes)
+		// #nosec G120 -- MaxBytesReader on the previous line caps the body
+		// before ParseMultipartForm can spool it; gosec doesn't track the
+		// dataflow across statements.
 		if err := r.ParseMultipartForm(limits.MaxParseMemoryBytes); err != nil {
 			code := http.StatusBadRequest
 			// MaxBytesReader signals overflow with this exact prefix.
@@ -91,7 +94,7 @@ func Transparent(limits Limits) http.Handler {
 			writeError(w, http.StatusBadRequest, "missing 'image' file field")
 			return
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 
 		// Buffer the upload so we can DecodeConfig (peek dimensions) before
 		// committing memory to a full decode — this is the decompression-bomb

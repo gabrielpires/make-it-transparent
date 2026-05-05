@@ -1,11 +1,12 @@
+version: "2"
+
 run:
   timeout: 5m
 
 linters:
-  disable-all: true
+  default: none
   enable:
     - errcheck
-    - gosimple
     - govet
     - ineffassign
     - staticcheck
@@ -13,29 +14,17 @@ linters:
     - bodyclose
     - misspell
     - revive
-    - gofmt
-    - goimports
     - unconvert
     - whitespace
 
-linters-settings:
-  revive:
+  exclusions:
     rules:
-      - name: var-naming
-      - name: exported
-      - name: error-return
-      - name: error-strings
-      - name: error-naming
-      - name: if-return
-      - name: increment-decrement
-      - name: package-comments
-      - name: range
-      - name: receiver-naming
-      - name: time-naming
-      - name: indent-error-flow
+      - path: _test\.go
+        linters:
+          - errcheck
+          - revive
 
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - errcheck
+formatters:
+  enable:
+    - gofmt
+    - goimports

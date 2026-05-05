@@ -1,3 +1,5 @@
+// Command make-it-transparent serves the colour-to-alpha web app: a
+// httpkit-backed HTTP server with the frontend embedded via go:embed.
 package main
 
 import (
@@ -63,7 +65,11 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		start := time.Now()
 		sw := &statusWriter{ResponseWriter: w, status: http.StatusOK}
 		next.ServeHTTP(sw, r)
-		log.Printf("%s %s %d %s id=%s",
+		// %q on path/method neutralises CR/LF and other control bytes that
+		// would otherwise let an attacker forge log lines (CWE-117). gosec's
+		// taint analysis can't see that the formatter already escapes.
+		// #nosec G706 -- %q escapes control chars in user-controlled fields.
+		log.Printf("%q %q %d %s id=%s",
 			r.Method, r.URL.Path, sw.status, time.Since(start),
 			httpkit.RequestIDFromContext(r.Context()),
 		)

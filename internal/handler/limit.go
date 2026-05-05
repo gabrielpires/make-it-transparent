@@ -6,11 +6,11 @@ import "net/http"
 // Excess requests get 503 with Retry-After: 1 instead of piling on memory and
 // goroutines. Use it on expensive endpoints (image decoding) to prevent a
 // single client from exhausting the server's RAM.
-func Concurrency(max int, next http.Handler) http.Handler {
-	if max <= 0 {
+func Concurrency(maxInFlight int, next http.Handler) http.Handler {
+	if maxInFlight <= 0 {
 		return next
 	}
-	sem := make(chan struct{}, max)
+	sem := make(chan struct{}, maxInFlight)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		select {
 		case sem <- struct{}{}:

@@ -74,8 +74,12 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	defer out.Close()
 	if err := png.Encode(out, img); err != nil {
+		_ = out.Close()
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	if err := out.Close(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

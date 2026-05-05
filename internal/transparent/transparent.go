@@ -135,9 +135,9 @@ func ParseHex(s string) (color.NRGBA, error) {
 		return color.NRGBA{}, fmt.Errorf("invalid hex color %q: %w", s, err)
 	}
 	return color.NRGBA{
-		R: uint8(n >> 16),
-		G: uint8(n >> 8),
-		B: uint8(n),
+		R: uint8((n >> 16) & 0xff),
+		G: uint8((n >> 8) & 0xff),
+		B: uint8(n & 0xff),
 		A: 255,
 	}, nil
 }
