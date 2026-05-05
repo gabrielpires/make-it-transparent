@@ -1,0 +1,8 @@
+/make-it-transparent
+*.test
+*.out
+coverage.*
+.vscode/
+.idea/
+.DS_Store
+testdata/fuzz/
